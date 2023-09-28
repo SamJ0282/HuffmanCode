@@ -1,26 +1,23 @@
 // API Reference: https://www.wix.com/velo/reference/api-overview/introduction
 // “Hello, World!” Example: https://learn-code.wix.com/en/article/1-hello-world
 
-
 $w.onReady(function () {
-    
     expandAndCollapse();
     $w('#button1').onClick(buttonClick);
     $w('#frequencyCountRepeater').data = []
     $w('#sortRepeater').data = []
     $w('#mergeAndSortRepeater').data = []
-    
-    $w('#table1').rows = []
-    
-     
+    $w('#table1').rows = []       
 })
+
+
+
 function expandAndCollapse() {
     $w("#huffmanInput").onInput((event) => {
         let myString = event.target.value;
         //console.log(myString);
         if (myString) { 
             $w("#button1").enable();
-
         }
         else {
             $w("#button1").disable();
@@ -32,6 +29,7 @@ function expandAndCollapse() {
 function buttonClick() {
         $w('#step1').expand()
         $w('#step2').expand()
+        
         const huffmanInput = String($w("#huffmanInput").value);
         
         var result =  frequency(huffmanInput);
@@ -41,10 +39,7 @@ function buttonClick() {
         //console.log(secondStep);
         const tree = buildtree(secondStep);  
         //console.log(tree)   
-        var pat = '';
-        assignCode(tree,pat);
-        
-        
+                
         var tableData = [];
         var sumOfSize = 0;
         for (let k of Object.keys(result)){
@@ -73,14 +68,11 @@ function buttonClick() {
         $w('#group15').expand()
         
         buildCodeLength(sumOfSize,sumOfFrequencies);
-        
-        
     }
 
 
 
 function constructRepeater(res){
-    
     var myData = []
     var idCounter = 0;
     for (let k of Object.keys(res)) {
@@ -91,10 +83,9 @@ function constructRepeater(res){
     $w('#frequencyCountRepeater').onItemReady(($item, itemData, itemIndex) => {
         $item('#letter').text = itemData.letter;
         $item('#firstRepeaterFrequency').text = String(itemData.fre);
-        $item('#text20').text = String(itemData.fre);
-        
-                
+        $item('#text20').text = String(itemData.fre);         
     });
+    
     $w('#frequencyCountRepeater').data = myData;
     
     let sortData = [...myData];
@@ -104,9 +95,7 @@ function constructRepeater(res){
         $item('#sortLetter').text = itemData.letter;
         $item('#sortRepeaterFrequency').text = String(itemData.fre);
         $item('#text21').text = String(itemData.fre);
-
     })
-    
     $w('#sortRepeater').data = sortData;
     
     
@@ -122,17 +111,18 @@ function frequency(str) {
            freqs[character] = 1;
         }
     }
-
     return freqs;
 }
+
+
 function sortfreq(freq){
     var letters = [];
     for (var ch in freq){
         letters.push([freq[ch],ch]);
     }
     return letters.sort((a,b) => a[0] - b[0]);
-
 }
+
 
 
 function buildtree(sortedStep){
@@ -141,34 +131,23 @@ function buildtree(sortedStep){
     var stepNumber = 3;
     var mergeSortData = []
     
-
     $w('#mergeAndSortRepeater').onItemReady(($item, itemData) => {
-       
         $item('#stepNumber').text = String(itemData.stepNumber)
         $item('#stepDescription').text = itemData.stepDescription
         //$item('#repeater1').data = itemData.nestedData;
-       
     })
+    
     while(sortedStep.length>1){
-
         //console.log(sortedStep)
         var leasttwo = [sortedStep[0][1],sortedStep[1][1]];
-        
         var therest = sortedStep.slice(2,sortedStep.length);
-            
-     
+          
         var xyz = [];
         if (therest.length >= 1) {
             therest.forEach(element => {xyz.push(element[0])}); //CHANGE
         }
-       
-
-
-        
-        
-        
+          
         var combfreq = sortedStep[0][0] + sortedStep[1][0];
-
         var combfreqArray = [sortedStep[0][0] + sortedStep[1][0]];
         var finalArray = (xyz.concat(combfreqArray)).sort(function(a, b){return a-b})
         
@@ -193,25 +172,9 @@ function buildtree(sortedStep){
         sortedStep.push(two);
         sortedStep.sort((a,b) => a[0] - b[0]);
         console.log(sortedStep)
-        
     }
     $w('#mergeAndSortRepeater').data = mergeSortData;
-
-        
-        
     return sortedStep[0][1];
-    
-}
-
-var code = {};
-function assignCode(node,pat)  {  
-      if(typeof(node)==typeof(""))  
-          code[node]=pat;  
-      else  
-      {  
-          assignCode( node[0], pat+'0');  
-          assignCode( node[1], pat+'1');  
-      }
 }
 
 function buildCodeLength(s,f) {
